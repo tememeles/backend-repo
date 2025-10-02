@@ -2,13 +2,14 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "index.ts",
+  "main": "dist/index.js",
   "scripts": {
-    "start": "tsx index.ts",
+    "start": "node dist/index.js",
     "dev": "nodemon --exec tsx index.ts",
     "build": "tsc",
     "start:prod": "node dist/index.js",
-    "create-admin": "node --loader ts-node/esm createAdmin.ts"
+    "create-admin": "node --loader ts-node/esm createAdmin.ts",
+    "seed-bestselling": "tsx seedBestSelling.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,8 @@
     "@types/multer": "^1.4.11",
     "@types/node": "^20.19.18",
     "@types/nodemailer": "^7.0.1",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8",
     "dotenv": "^17.2.2",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.1",
@@ -36,7 +39,9 @@
     "express": "^5.1.0",
     "mongoose": "^8.18.1",
     "multer": "^2.0.2",
-    "nodemailer": "^6.9.7"
+    "nodemailer": "^6.9.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "type": "module"
 }

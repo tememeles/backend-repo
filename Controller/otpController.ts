@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { OTPModel } from '../models/OTP.ts';
-import { sendEmail } from '../utils/sendEmail.ts';
-import User, { IUser } from '../models/User.ts';
+import { OTPModel } from '../models/OTP.js';
+import { sendEmail } from '../utils/sendEmail.js';
+import User, { IUser } from '../models/User.js';
 import crypto from 'crypto';
 
 // Interface for request body

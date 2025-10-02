@@ -21,9 +21,7 @@
     "exactOptionalPropertyTypes": false,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
-    "downlevelIteration": true,
-    "allowImportingTsExtensions": true,
-    "noEmit": true
+    "downlevelIteration": true
   },
   "include": [
     "**/*.ts",

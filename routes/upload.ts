@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { cloudinary, upload } from '../cloudinaryConfig.ts';
+import { cloudinary, upload } from '../cloudinaryConfig.js';
 import { UploadApiErrorResponse, UploadApiResponse } from 'cloudinary';
 
 // Define Cloudinary upload result type
@@ -18,6 +18,73 @@ const router = express.Router();
 interface UploadRequest extends Request {
   file?: Express.Multer.File;
 }
+
+/**
+ * @swagger
+ * /api/upload:
+ *   post:
+ *     summary: Upload image file to Cloudinary
+ *     tags: [Upload]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - image
+ *             properties:
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *                 description: Image file to upload (JPEG, PNG, GIF, WebP - max 5MB)
+ *     responses:
+ *       200:
+ *         description: Image uploaded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: "Image uploaded successfully"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     url:
+ *                       type: string
+ *                       description: Cloudinary image URL
+ *                     public_id:
+ *                       type: string
+ *                       description: Cloudinary public ID
+ *                     width:
+ *                       type: integer
+ *                     height:
+ *                       type: integer
+ *                     format:
+ *                       type: string
+ *                     bytes:
+ *                       type: integer
+ *       400:
+ *         description: Bad request - invalid file or missing image
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ *                   example: "No image file provided."
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 
 // POST /api/upload - upload image to Cloudinary
 router.post('/', upload.single('image'), async (req: UploadRequest, res: Response): Promise<void> => {

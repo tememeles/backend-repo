@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import Blog from './models/Blog.ts';
+import Blog from './models/Blog.js';
 
 // Load environment variables
 dotenv.config();

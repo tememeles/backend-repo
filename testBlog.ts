@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // Test script to verify Blog.ts functionality
 import mongoose from 'mongoose';
-import Blog from './models/Blog.ts';
+import Blog from './models/Blog.js';
 import dotenv from 'dotenv';
 
 dotenv.config();

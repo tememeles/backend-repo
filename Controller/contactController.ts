@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import Contact from "../models/Contact.ts";
-import { sendEmail } from "../utils/sendEmail.ts";
+import Contact from "../models/Contact.js";
+import { sendEmail } from "../utils/sendEmail.js";
 import dotenv from "dotenv";
 
 // Load environment variables

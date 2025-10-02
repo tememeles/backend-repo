@@ -6,20 +6,22 @@ import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
-import otpRoutes from './routes/otpRoutes.ts';
+import otpRoutes from './routes/otpRoutes.js';
+import bestSellingRoutes from './routes/bestSelling.js';
+import { setupSwagger } from './swagger.js';
 
 // Import types
-// import { IOrder } from './types/index.ts'; // Unused import
+// import { IOrder } from './types/index.js'; // Unused import
 
 // Import models
-import Product from "./models/Product.ts";
-import productsRouter from './routes/products.ts';
-import uploadRouter from './routes/upload.ts';
-import Order from "./models/Order.ts";
-import User from "./models/User.ts";
-import Blog from "./models/Blog.ts";
-import Contact from "./models/Contact.ts";
-import { createContact } from "./Controller/contactController.ts";
+import Product from "./models/Product.js";
+import productsRouter from './routes/products.js';
+import uploadRouter from './routes/upload.js';
+import Order from "./models/Order.js";
+import User from "./models/User.js";
+import Blog from "./models/Blog.js";
+import Contact from "./models/Contact.js";
+import { createContact } from "./Controller/contactController.js";
 
 // Create Express app
 const app: Application = express();
@@ -71,6 +73,11 @@ app.use('/api/products', productsRouter);
 app.use('/api/upload', uploadRouter);
 // otp API
 app.use('/api/otp', otpRoutes);
+// Best selling products API
+app.use('/api/bestselling', bestSellingRoutes);
+
+// Setup Swagger API Documentation
+setupSwagger(app);
 
 // Get all products
 app.get("/api/products", async (req: Request, res: Response) => {
@@ -176,6 +183,63 @@ app.post("/api/products/seed", async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/orders:
+ *   post:
+ *     summary: Create a new order
+ *     tags: [Orders]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - products
+ *               - totalAmount
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 description: User ID who placed the order
+ *               products:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     productId:
+ *                       type: string
+ *                     quantity:
+ *                       type: integer
+ *                     price:
+ *                       type: number
+ *               totalAmount:
+ *                 type: number
+ *                 description: Total order amount
+ *               shippingAddress:
+ *                 type: object
+ *                 properties:
+ *                   street:
+ *                     type: string
+ *                   city:
+ *                     type: string
+ *                   state:
+ *                     type: string
+ *                   zipCode:
+ *                     type: string
+ *                   country:
+ *                     type: string
+ *     responses:
+ *       201:
+ *         description: Order created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Order'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ */
 // Orders API
 // Create order
 app.post("/api/orders", async (req: Request, res: Response) => {
@@ -284,6 +348,66 @@ app.delete("/api/orders/:id", async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/users:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: User's full name
+ *                 example: "John Doe"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: "john.doe@example.com"
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 example: "securePassword123"
+ *               role:
+ *                 type: string
+ *                 enum: [user, admin]
+ *                 description: User role
+ *                 default: user
+ *     responses:
+ *       201:
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User registered successfully"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ */
 // Register
 app.post("/api/users", async (req: Request, res: Response) => {
   try {
@@ -309,6 +433,56 @@ app.post("/api/users", async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/login:
+ *   post:
+ *     summary: Login user
+ *     tags: [Users]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: User's email address
+ *                 example: "john.doe@example.com"
+ *               password:
+ *                 type: string
+ *                 description: User's password
+ *                 example: "securePassword123"
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Login successful"
+ *                 user:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     name:
+ *                       type: string
+ *                     email:
+ *                       type: string
+ *                     role:
+ *                       type: string
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ */
 // Login
 app.post("/api/login", async (req: Request, res: Response) => {
   try {
@@ -597,6 +771,62 @@ app.delete("/api/blogs/:id", async (req: Request, res: Response) => {
 
 // ------------------- Contact Routes ------------------- //
 
+/**
+ * @swagger
+ * /api/contact:
+ *   post:
+ *     summary: Create a contact message
+ *     tags: [Contact]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *               - email
+ *               - message
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: Contact person's name
+ *                 example: "Jane Doe"
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: Contact person's email
+ *                 example: "jane.doe@example.com"
+ *               message:
+ *                 type: string
+ *                 description: Contact message
+ *                 example: "I have a question about your products..."
+ *     responses:
+ *       201:
+ *         description: Contact message created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Contact'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ *   get:
+ *     summary: Get all contact messages (admin only)
+ *     tags: [Contact]
+ *     responses:
+ *       200:
+ *         description: List of contact messages
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Contact'
+ *       500:
+ *         $ref: '#/components/responses/InternalServerError'
+ */
 // Create contact message
 app.post("/api/contact", createContact);
 
