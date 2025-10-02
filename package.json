@@ -25,7 +25,9 @@
     "nodemailer": "^6.9.7",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.2",
+    "@types/swagger-jsdoc": "^6.0.4",
+    "@types/swagger-ui-express": "^4.1.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
