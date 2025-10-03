@@ -46,6 +46,8 @@ app.use(cors({
     'http://localhost:5174',
     'https://localhost:5173',
     'https://localhost:5174',
+    'https://backend-repo-2-v8wc.onrender.com',
+    
     '*' // Allow all origins temporarily
   ],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
