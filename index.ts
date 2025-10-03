@@ -47,6 +47,7 @@ app.use(cors({
     'https://localhost:5173',
     'https://localhost:5174',
     'https://backend-repo-2-v8wc.onrender.com',
+    'https://frontend-seven-ebon-85.vercel.app/',
     
     '*' // Allow all origins temporarily
   ],
