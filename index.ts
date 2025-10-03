@@ -34,7 +34,7 @@ const __dirname = path.dirname(__filename);
 dotenv.config({ path: path.join(__dirname, '.env') });
 
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
-const MONGO_URI: string = process.env.MONGO_URI || "mongodb://localhost:27017/mydatabase";
+const MONGO_URI: string = process.env.MONGO_URI || "mongodb+srv://tememeles24_24:83637436@kapeedb-cluster.vdizjvx.mongodb.net/";
 
 // Middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
