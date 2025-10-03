@@ -48,6 +48,7 @@ app.use(cors({
     'https://localhost:5174',
     'https://backend-repo-2-v8wc.onrender.com',
     'https://frontend-seven-ebon-85.vercel.app/',
+    'https://vercel.app',
     
     '*' // Allow all origins temporarily
   ],
@@ -58,17 +59,17 @@ app.use(cors({
 }));
 
 // Additional CORS headers middleware
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
+// app.use((req: Request, res: Response, next: NextFunction) => {
+//   res.header('Access-Control-Allow-Origin', '*');
+//   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   
-  if (req.method === 'OPTIONS') {
-    res.sendStatus(200);
-  } else {
-    next();
-  }
-});
+//   if (req.method === 'OPTIONS') {
+//     res.sendStatus(200);
+//   } else {
+//     next();
+//   }
+// });
 
 // Logging middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
