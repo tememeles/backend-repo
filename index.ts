@@ -6,9 +6,11 @@ import bcrypt from "bcrypt";
 import path from "path";
 import { fileURLToPath } from "url";
 import dotenv from "dotenv";
+import cors from "cors";
 import otpRoutes from './routes/otpRoutes.js';
 import bestSellingRoutes from './routes/bestSelling.js';
 import { setupSwagger } from './swagger.js';
+
 
 // Import types
 // import { IOrder } from './types/index.js'; // Unused import
@@ -36,17 +38,39 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 const PORT: number = parseInt(process.env.PORT || '5000', 10);
 const MONGO_URI: string = process.env.MONGO_URI || "mongodb+srv://tememeles24_24:83637436@kapeedb-cluster.vdizjvx.mongodb.net/";
 
-// Middleware
+// CORS Configuration
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://localhost:5173',
+    '*' // Allow all origins for development
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
+// Add preflight handling for CORS
 app.use((req: Request, res: Response, next: NextFunction) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
     res.sendStatus(200);
   } else {
     next();
   }
 });
+
+// Logging middleware
+app.use((req: Request, res: Response, next: NextFunction) => {
+  console.log(`${req.method} ${req.path} - Origin: ${req.get('Origin')}`);
+  next();
+});
+
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "public")));
@@ -62,7 +86,18 @@ console.log("🔍 Environment Variables Loaded:");
 console.log("📧 EMAIL_USER:", process.env.EMAIL_USER);
 console.log("👨‍💼 ADMIN_EMAIL:", process.env.ADMIN_EMAIL);
 console.log("🔑 EMAIL_PASSWORD:", process.env.EMAIL_PASSWORD ? "***HIDDEN***" : "NOT SET");
+console.log("🗄️ MONGO_URI:", process.env.MONGO_URI ? "***CONNECTED***" : "NOT SET");
 console.log("-----------------------------------");
+
+// Add test endpoint for debugging
+app.get('/api/test', (req: Request, res: Response) => {
+  res.json({ 
+    message: 'Backend is working!', 
+    timestamp: new Date().toISOString(),
+    cors: 'enabled',
+    mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  });
+});
 
 // User model is imported from models/User.js
 
@@ -862,7 +897,15 @@ app.delete("/api/contact/:id", async (req: Request, res: Response) => {
   }
 });
 
+// Error handling middleware (add before app.listen)
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`🌐 CORS enabled for frontend communication`);
+  console.log(`📊 API Documentation: http://localhost:${PORT}/api-docs`);
 });
